@@ -305,7 +305,7 @@ M.S. Student}
 
 % --- Slide 19: Why We Need Compute ---
 \begin{frame}{Why I Need Compute}
-  \textbf{Current Hardware:} 8$\times$ RTX 5000 Ada
+  \textbf{Current Hardware:} 8$\times$ RTX 6000 Ada (48GB VRAM each)
 
   \vspace{0.3em}
   \textbf{RL Training Requirements for Qwen2-VL-8B}
@@ -318,10 +318,10 @@ M.S. Student}
   \vspace{0.3em}
   \textbf{The Gap}
   \begin{itemize}
-    \item RTX 5000 Ada has 32GB VRAM --- insufficient for RL with reference model + policy model
-    \item PPO requires $\sim$48GB just for model weights (policy + value + reference)
-    \item Even GRPO needs $\sim$32GB (policy + reference) before activations
-    \item I need A100 80GB or H100 class hardware for meaningful RL training
+    \item RTX 6000 Ada (48GB) can fit single-model inference and LoRA fine-tuning
+    \item PPO requires $\sim$48GB just for weights (policy + value + reference) --- no room for activations
+    \item GRPO needs $\sim$32GB (policy + reference) + activations $\rightarrow$ tight fit, limits batch size
+    \item I need A100 80GB or H100 class hardware for full-scale RL training at reasonable throughput
   \end{itemize}
 \end{frame}
 
