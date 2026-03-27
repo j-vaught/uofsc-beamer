@@ -138,7 +138,71 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION 2: FLIR M364C DRIVER REWRITE
+% SECTION 2: FURUNO RADAR — RUST REIMPLEMENTATION
+% ============================================================
+\sectionsubtitle{No SDK? No problem.}
+\section{Furuno Radar - Rust Reimplementation}
+
+% --- Slide: Why Rewrite ---
+\begin{frame}{Furuno Radar - Why Rewrite?}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{The Problem}
+      \begin{itemize}
+        \item Furuno's official SDK (\texttt{libNAVNETDLL}) is a closed-source, Windows-only binary
+        \item No documentation of the wire protocol
+        \item Cannot run on Linux field computers
+        \item No web interface, no built-in recording
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{The Solution}
+      \begin{itemize}
+        \item Reverse-engineered the entire protocol from packet captures
+        \item Reimplemented from scratch in Rust --- zero proprietary dependencies
+        \item Cross-platform (Linux, macOS, Windows), single binary
+        \item Browser-based dashboard for remote control and monitoring
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% --- Slide: Architecture & Capabilities ---
+\begin{frame}{Architecture \& Features}
+  \begin{columns}[T]
+    \begin{column}{0.30\textwidth}
+      \textbf{Protocol Layer}
+      \begin{itemize}
+        \item Authentication handshake
+        \item 90+ register commands
+        \item 4 echo encoding formats
+        \item Doppler processing
+        \item Auto-discovery
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.30\textwidth}
+      \textbf{Connection Manager}
+      \begin{itemize}
+        \item 5-stage state machine
+        \item Auto-reconnection
+        \item Keepalive management
+        \item Network auto-config
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.34\textwidth}
+      \textbf{Web Dashboard}
+      \begin{itemize}
+        \item Real-time PPI display
+        \item Full settings control (range, gain, clutter, STC)
+        \item One-click CSV recording with metadata
+        \item Automated parameter sweeps
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% SECTION 3: FLIR M364C DRIVER REWRITE
 % ============================================================
 \sectionsubtitle{Threads are fun. . .}
 \section{FLIR M364C Driver Rewrite}
@@ -176,7 +240,7 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION 3: ALIGNED THERMAL/RGB DATA
+% SECTION 4: ALIGNED THERMAL/RGB DATA
 % ============================================================
 \sectionsubtitle{Hard to align when you're not on the same wavelength}
 \section{Aligned Thermal/RGB Data}
@@ -207,7 +271,7 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION 4: AUTOMATED IMU CALIBRATION TESTING
+% SECTION 5: AUTOMATED IMU CALIBRATION TESTING
 % ============================================================
 \sectionsubtitle{Stability is hard to come by these days}
 \section{Automated IMU Calibration Testing}
@@ -245,7 +309,7 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION 5: VLM-CONTROLLED SEGMENTATION
+% SECTION 6: VLM-CONTROLLED SEGMENTATION
 % ============================================================
 \sectionsubtitle{Maybe the machines can take my job too}
 \section{VLM-Controlled Segmentation}
@@ -298,7 +362,7 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION 6: COMPUTE ACQUISITION
+% SECTION 7: COMPUTE ACQUISITION
 % ============================================================
 \sectionsubtitle{Compute? Just do it by hand}
 \section{Compute Acquisition}
@@ -354,7 +418,7 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION 7: FUTURE WORK
+% SECTION 8: FUTURE WORK
 % ============================================================
 \sectionsubtitle{TODO: finish TODO list}
 \section{Future Work}
