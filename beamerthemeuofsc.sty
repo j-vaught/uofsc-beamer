@@ -278,7 +278,7 @@
 \newcommand{\sectionsubtitle}[1]{\renewcommand{\@sectionsubtitle}{#1}}
 
 \AtBeginSection[]{%
-  \begin{frame}[plain]
+  \begin{frame}[plain, noshrink]
     \begin{tikzpicture}[remember picture, overlay]
       \fill[UofSCGarnet] (current page.south west) rectangle (current page.north east);
       \fill[UofSCDarkGarnet] (current page.south west) rectangle ([yshift=0.8cm]current page.south east);
