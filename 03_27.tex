@@ -278,34 +278,39 @@ M.S. Student}
 
 % --- Slide 14: The Approach ---
 \begin{frame}{Horizon-Based Stabilization Eval.}
-  \textbf{Problem:} How to quantify how un-level or unstable an IMU-stabilized camera is after ``stabilization''?
+  \begin{columns}[T]
+    \begin{column}{0.45\textwidth}
+      \textbf{Problem:} Quantify how un-level an IMU-stabilized camera is after ``stabilization.''
 
-  \vspace{0.3em}
-  \textbf{Method}
-  \begin{enumerate}
-    \item Semantic segmentation on water scenes $\rightarrow$ land/water/sky masks
-    \item Extract water-sky boundary $\rightarrow$ RANSAC line fit
-    \item Compute horizon angle per frame: $\theta = \arctan(\text{slope})$
-    \item Track $\theta$ deviation over time $\rightarrow$ RMS deviation = stabilization quality
-  \end{enumerate}
+      \vspace{0.3em}
+      \textbf{Method}
+      \begin{enumerate}
+        \item Semantic segmentation $\rightarrow$ land/water/sky masks
+        \item Water-sky boundary $\rightarrow$ RANSAC line fit
+        \item Horizon angle: $\theta = \arctan(\text{slope})$
+        \item $\theta$ deviation over time $\rightarrow$ RMS = quality
+      \end{enumerate}
 
-  \vspace{0.3em}
-  \begin{table}
-    \centering
-    \footnotesize
-    \begin{tabular}{lccc}
-      \toprule
-      \textbf{Method} & \textbf{Static RMS} & \textbf{Latency} & \textbf{Drift Handling} \\
-      \midrule
-      Exponential MA    & 1--5\textdegree   & 50--200ms & None \\
-      Complementary     & 0.5--2\textdegree & 5--20ms   & Partial \\
-      EKF/MEKF          & 0.1--0.5\textdegree & 1--5ms  & Full (bias est.) \\
-      \bottomrule
-    \end{tabular}
-  \end{table}
+      \vspace{0.3em}
+      \footnotesize
+      \begin{tabular}{lcc}
+        \toprule
+        \textbf{Method} & \textbf{RMS} & \textbf{Latency} \\
+        \midrule
+        Exp.\ MA      & 1--5\textdegree       & 50--200ms \\
+        Complementary & 0.5--2\textdegree     & 5--20ms \\
+        EKF/MEKF      & 0.1--0.5\textdegree   & 1--5ms \\
+        \bottomrule
+      \end{tabular}
 
-  \vspace{0.3em}
-  \textbf{Status:} Early-stage / future work --- blocked on synced time data between camera and IMU.
+      \vspace{0.3em}
+      \normalsize
+      \textbf{Status:} Blocked on synced time data between camera and IMU.
+    \end{column}
+    \begin{column}{0.52\textwidth}
+      \includegraphics[width=\textwidth]{figures/horizon_overlay.jpg}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 % ============================================================
