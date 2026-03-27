@@ -20,8 +20,6 @@ M.S. Student}
 \institute[UofSC]{}  % not shown on title slide; kept for footline short form
 \date{}              % not shown on title slide
 
-% \titlegraphic{\includegraphics[height=1.2cm]{uofsc-logo-white.png}}
-
 % ============================================================
 \begin{document}
 
@@ -39,184 +37,382 @@ M.S. Student}
 \end{frame}
 
 % ============================================================
-% SECTION WITH SUBTITLE (centered, auto-generated)
-% Set \sectionsubtitle{} BEFORE the \section command.
+% SECTION 1: REAL-TIME RADAR TO CAMERA PROJECTION
 % ============================================================
-\sectionsubtitle{Setting the stage for the research problem}
-\section{Introduction}
+\sectionsubtitle{Replacing a post-processing pipeline with a sub-15ms real-time system}
+\section{Real-Time Radar to Camera Projection}
 
-\begin{frame}{Motivation}
-  This body text is in Arimo (the Arial equivalent).
+% --- Slide 4: The Problem & Prior State ---
+\begin{frame}{The Problem \& Prior State}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{What Existed}
+      \begin{itemize}
+        \item Ty's system: C++/Python hybrid
+        \item Post-processing only (Python/MATLAB)
+        \item ROS2 middleware for inter-process comms
+        \item ROS2 overhead: 8--15ms image pub/sub, 30--50MB RAM per node, 2--5s startup
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{What Was Needed}
+      \begin{itemize}
+        \item Real-time overlay at 30 fps ($<$33ms budget)
+        \item Sensor fusion: Lucid camera + SBG IMU/GPS + Simrad radar
+        \item Web-accessible GUI for remote monitoring
+        \item No ROS2 dependency
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
 
+% --- Slide 5: System Architecture ---
+\begin{frame}{System Architecture}
+  Built entirely in Rust over a 4-day sprint. Components:
+
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Drivers}
+      \begin{itemize}
+        \item \textbf{Lucid camera} --- Arena SDK wrapped via Rust FFI (bindgen)
+        \item \textbf{SBG Ellipse IMU+GPS} --- sbgECom protocol wrapped via FFI
+        \item \textbf{Simrad radar} --- fully written from scratch in Rust; reverse-engineered multicast UDP protocol (no official SDK)
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Application Layer}
+      \begin{itemize}
+        \item \textbf{File writer} --- parallel multi-format raw writes
+        \item \textbf{Network manager} --- auto-detect ports, configure on boot
+        \item \textbf{Orchestrator} --- central controller
+        \item \textbf{Projection engine} --- custom CUDA kernels
+        \item \textbf{Web GUI} --- WebSocket server to browser
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% --- Slide 6: Performance ---
+\begin{frame}{Performance}
+  \textbf{CUDA Pipeline Stages}
   \begin{itemize}
-    \item First key point about your topic
-    \item Second key point with supporting detail
-    \item Third key point to frame the problem
+    \item Raw Bayer $\rightarrow$ RGB demosaic: $\sim$0.2ms
+    \item RGB $\rightarrow$ JPEG encode (nvJPEG): $\sim$1.0ms
+    \item Downscale to streaming resolution: $\sim$0.1ms
+    \item Radar $\rightarrow$ camera coordinate projection: $<$0.1ms
+    \item WebSocket delivery to browser: $<$1ms
   \end{itemize}
 
   \vspace{0.5em}
-  Numbered lists now have plain numbers (no box):
-  \begin{enumerate}
-    \item Step one of the process
-    \item Step two of the process
-    \item Step three of the process
-  \end{enumerate}
-\end{frame}
-
-% ============================================================
-\sectionsubtitle{A brief review of the relevant literature}
-\section{Background}
-
-\begin{frame}{Literature Review}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \textbf{Prior Work}
-      \begin{itemize}
-        \item Author A et al.\ (2023) studied \ldots
-        \item Author B et al.\ (2024) proposed \ldots
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \textbf{Our Contribution}
-      \begin{itemize}
-        \item We extend the framework by \ldots
-        \item Novel approach to \ldots
-      \end{itemize}
-    \end{column}
-  \end{columns}
-
-  \vspace{1em}
-  \formal{This sentence is set in Tinos (the Georgia equivalent),
-  which you can use for formal text via the
-  \texttt{\textbackslash formal\{\}} command.}
-\end{frame}
-
-% ============================================================
-\sectionsubtitle{How we approached the problem}
-\section{Methods}
-
-\begin{frame}{Methodology}
-  \begin{block}{Approach}
-    Describe your overall methodology or experimental design here.
-  \end{block}
-
-  \begin{alertblock}{Important Consideration}
-    Highlight a key constraint or assumption.
-  \end{alertblock}
-
-  \begin{exampleblock}{Example}
-    Provide a concrete example of the method in action.
-  \end{exampleblock}
-\end{frame}
-
-% ============================================================
-\sectionsubtitle{Key findings and analysis}
-\section{Results}
-
-% ------ 2-Column: text left, image right ------
-\begin{frame}{Two Columns --- Image Right}
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      Key findings from the experiment:
-      \begin{enumerate}
-        \item Accuracy improved by 13.4\%
-        \item Runtime decreased by 35\%
-        \item Scales linearly with input size
-      \end{enumerate}
-
-      \vspace{0.5em}
-      These results hold across all tested configurations.
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \includegraphics[width=\textwidth]{placeholder.png}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ------ 3-Column: text | image | text ------
-\begin{frame}{Three Columns --- Image in Middle}
-  \begin{columns}[T]
-    \begin{column}{0.28\textwidth}
-      \textbf{Input}
-      \begin{itemize}
-        \item Raw sensor data
-        \item 10k samples/sec
-        \item 3 channels
-      \end{itemize}
-    \end{column}
-    \begin{column}{0.38\textwidth}
-      \centering
-      \includegraphics[width=\textwidth]{placeholder.png}
-    \end{column}
-    \begin{column}{0.28\textwidth}
-      \textbf{Output}
-      \begin{itemize}
-        \item Classified events
-        \item 98.2\% precision
-        \item Real-time capable
-      \end{itemize}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ------ 2-Column: 1/3 text, 2/3 image ------
-\begin{frame}{Wide Image --- 1/3 Text, 2/3 Image}
-  \begin{columns}[T]
-    \begin{column}{0.30\textwidth}
-      \textbf{Observations}
-
-      \vspace{0.3em}
-      The heatmap reveals a strong spatial correlation in the
-      eastern region, consistent with the hypothesis.
-
-      \vspace{0.5em}
-      \begin{enumerate}
-        \item Cluster A: high activity
-        \item Cluster B: moderate
-        \item Cluster C: baseline
-      \end{enumerate}
-    \end{column}
-    \begin{column}{0.65\textwidth}
-      \includegraphics[width=\textwidth]{placeholder.png}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-% ------ Results table ------
-\begin{frame}{Results Table}
   \begin{table}
     \centering
-    \caption{Summary of experimental results.}
     \begin{tabular}{lcc}
       \toprule
-      \textbf{Method} & \textbf{Accuracy (\%)} & \textbf{Runtime (s)} \\
+      \textbf{Metric} & \textbf{ROS2 (FastDDS)} & \textbf{Custom Rust} \\
       \midrule
-      Baseline         & 78.3 & 12.4 \\
-      Proposed (Ours)  & \textbf{91.7} & \textbf{8.1} \\
+      Image transport (5MP)    & 8--15ms   & $<$0.2ms \\
+      End-to-end pipeline      & 30--80ms  & \textbf{$<$15ms (often $<$10ms)} \\
+      Memory per node          & 30--50MB  & 2--5MB \\
       \bottomrule
     \end{tabular}
   \end{table}
 \end{frame}
 
-% ============================================================
-\sectionsubtitle{}
-\section{Conclusion}
-
-\begin{frame}{Summary and Future Work}
-  \textbf{Summary}
+% --- Slide 7: Status ---
+\begin{frame}{Status \& Next Steps}
+  \textbf{Working}
   \begin{itemize}
-    \item We presented a novel approach to \ldots
-    \item Key finding: \ldots
-    \item Results demonstrate significant improvement.
+    \item Full pipeline functional end-to-end (camera $\rightarrow$ browser with projection)
+    \item All three sensor drivers operational
+    \item Web GUI streaming with real-time radar overlay
   \end{itemize}
 
   \vspace{0.5em}
-  \textbf{Future Directions}
+  \textbf{Remaining}
+  \begin{itemize}
+    \item Bug fixes from the 4-day sprint
+    \item Handoff to Ty for continued development
+    \item Integration with unified coordinate system (see Future Work)
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SECTION 2: FLIR M364C DRIVER REWRITE
+% ============================================================
+\sectionsubtitle{Fixing a threading bottleneck and modernizing the metadata pipeline}
+\section{FLIR M364C Driver Rewrite}
+
+% --- Slide 9: What Broke ---
+\begin{frame}{What Broke \& Why}
+  \textbf{The Bug}
+  \begin{itemize}
+    \item Original C++ driver used multiple writer threads but a \textit{single shared mutex}
+    \item At low FPS / single format: contention was masked
+    \item At higher FPS + multi-format writes (thermal + visible + radiometric): writers serialize on the lock
+    \item Each writer held the mutex during disk I/O --- blocking all others
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Consequence}
+  \begin{itemize}
+    \item Dropped frames from growing queues
+    \item Memory leak --- queues grew unbounded when writers couldn't keep up
+    \item System became unusable at target frame rates
+  \end{itemize}
+\end{frame}
+
+% --- Slide 10: What Was Fixed ---
+\begin{frame}{What Was Fixed}
   \begin{enumerate}
-    \item Extend the framework to handle \ldots
-    \item Conduct a larger-scale evaluation \ldots
-    \item Explore connections to \ldots
+    \item \textbf{Per-writer threading} --- eliminated shared mutex during I/O; each writer has its own queue
+    \item \textbf{UUIDv7 image referencing} --- each frame gets a unique, time-sortable UUID (RFC 9562); stored in EXIF \texttt{ImageUniqueID} and XMP \texttt{dc:Identifier}
+    \item \textbf{Metadata in EXIF/XMP} --- moved metadata out of filenames and into the JPEG image data itself (emissivity, distance, palette, camera params)
+    \item \textbf{Master metadata manifest} --- updated the central manifest file to index by UUID with full sensor parameters
   \end{enumerate}
+
+  \vspace{0.5em}
+  Both thermal and visible frames from the same capture share the same UUID for pairing.
+\end{frame}
+
+% ============================================================
+% SECTION 3: ALIGNED THERMAL/RGB DATA
+% ============================================================
+\sectionsubtitle{Generating ground-truth aligned and unaligned image pairs}
+\section{Aligned Thermal/RGB Data}
+
+% --- Slide 12: Two Experiments ---
+\begin{frame}{Two Experiments}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Experiment 1: Physical Offset}
+      \begin{itemize}
+        \item Measured center-to-center lens separation: 6.5cm
+        \item Static scene: moved entire rig by exactly the lens offset
+        \item Effectively co-located both lenses at the same position across two captures
+        \item Result: perfectly aligned thermal/RGB pairs
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Experiment 2: Controlled Parallax}
+      \begin{itemize}
+        \item At 6.5cm baseline, parallax is sub-pixel beyond $\sim$200ft
+        \item Setup: top of parking garage, objects at 200--500ft
+        \item Entire frame is effectively parallax-free (aligned)
+        \item Then moved camera sideways by several feet $\rightarrow$ synthetic misalignment
+        \item Result: controlled pairs with known alignment/misalignment
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% SECTION 4: AUTOMATED IMU CALIBRATION TESTING
+% ============================================================
+\sectionsubtitle{Using horizon detection to quantify stabilization quality}
+\section{Automated IMU Calibration Testing}
+
+% --- Slide 14: The Approach ---
+\begin{frame}{Horizon-Based Stabilization Evaluation}
+  \textbf{Problem:} How to quantify how un-level or unstable an IMU-stabilized camera is after ``stabilization''?
+
+  \vspace{0.3em}
+  \textbf{Method}
+  \begin{enumerate}
+    \item Semantic segmentation on water scenes $\rightarrow$ land/water/sky masks
+    \item Extract water-sky boundary $\rightarrow$ RANSAC line fit
+    \item Compute horizon angle per frame: $\theta = \arctan(\text{slope})$
+    \item Track $\theta$ deviation over time $\rightarrow$ RMS deviation = stabilization quality
+  \end{enumerate}
+
+  \vspace{0.3em}
+  \begin{table}
+    \centering
+    \footnotesize
+    \begin{tabular}{lccc}
+      \toprule
+      \textbf{Method} & \textbf{Static RMS} & \textbf{Latency} & \textbf{Drift Handling} \\
+      \midrule
+      Exponential MA    & 1--5\textdegree   & 50--200ms & None \\
+      Complementary     & 0.5--2\textdegree & 5--20ms   & Partial \\
+      EKF/MEKF          & 0.1--0.5\textdegree & 1--5ms  & Full (bias est.) \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+
+  \vspace{0.3em}
+  \textbf{Status:} Early-stage / future work --- blocked on synced time data between camera and IMU.
+\end{frame}
+
+% ============================================================
+% SECTION 5: VLM-CONTROLLED SEGMENTATION
+% ============================================================
+\sectionsubtitle{Teaching a vision-language model to reason about and control SAM}
+\section{VLM-Controlled Segmentation}
+
+% --- Slide 16: The Problem with SAM ---
+\begin{frame}{The Problem with SAM}
+  \textbf{SAM 2 (Meta, 2024)} is state-of-the-art for promptable segmentation, but:
+
+  \vspace{0.3em}
+  \begin{itemize}
+    \item When you click on different parts of the \textit{same object}, SAM refuses to grow the mask
+    \item Instead it produces separate masks or ignores new clicks entirely
+    \item \textbf{Root causes:}
+    \begin{itemize}
+      \item Decoder biased toward compact, semantically ``tight'' segments
+      \item Training data (SA-1B): each mask = one coherent visual region
+      \item Point prompts on distant regions confuse the decoder's attention
+    \end{itemize}
+    \item SAM 2.1 improves video tracking but does not fix this
+    \item No SAM 3 exists as of March 2026
+  \end{itemize}
+
+  \vspace{0.3em}
+  This is a known community pain point with no clean solution in the literature.
+\end{frame}
+
+% --- Slide 17: Our Approach ---
+\begin{frame}{Our Approach: Sub-Masks + VLM Control}
+  \textbf{Novel Contribution: Sub-Mask Union}
+  \begin{enumerate}
+    \item Click on each visually distinct part of the object separately
+    \item Get individual sub-masks for each part from SAM
+    \item Union all sub-masks $\rightarrow$ complete object mask
+    \item Morphological closing to fill gaps
+  \end{enumerate}
+
+  \vspace{0.3em}
+  Practiced informally in annotation tools (Label Studio, Roboflow) but \textit{never formalized or evaluated systematically}.
+
+  \vspace{0.5em}
+  \textbf{VLM as Controller:} Qwen2-VL-8B (7.6B params) reasons about where to click, when to zoom, when to stop.
+
+  \vspace{0.3em}
+  \textbf{Current Results}
+  \begin{itemize}
+    \item Beats SOTA models on edge cases (where SAM's single-click fails)
+    \item Does not beat SOTA on average --- using \textit{untrained} models only
+    \item \textbf{Next step:} RL training (GRPO) to learn tool-use policy (zoom, super-resolution, sub-mask creation)
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SECTION 6: COMPUTE ACQUISITION
+% ============================================================
+\sectionsubtitle{Why we need more compute and where we are getting it}
+\section{Compute Acquisition}
+
+% --- Slide 19: Why We Need Compute ---
+\begin{frame}{Why We Need Compute}
+  \textbf{Current Hardware:} 8$\times$ RTX 5000 Ada
+
+  \vspace{0.3em}
+  \textbf{RL Training Requirements for Qwen2-VL-8B}
+  \begin{itemize}
+    \item GRPO + LoRA: 2--4$\times$ A100 80GB, 50--200 GPU-hours
+    \item Full PPO: 4--8$\times$ A100 80GB, 100--500 GPU-hours
+    \item Multiple experiment iterations needed $\rightarrow$ cumulative demand is high
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{The Gap}
+  \begin{itemize}
+    \item RTX 5000 Ada has 32GB VRAM --- insufficient for RL with reference model + policy model
+    \item PPO requires $\sim$48GB just for model weights (policy + value + reference)
+    \item Even GRPO needs $\sim$32GB (policy + reference) before activations
+    \item Need A100 80GB or H100 class hardware for meaningful RL training
+  \end{itemize}
+\end{frame}
+
+% --- Slide 20: Allocation Landscape ---
+\begin{frame}{Allocation Landscape}
+  \begin{table}
+    \centering
+    \footnotesize
+    \begin{tabular}{llp{3.2cm}ll}
+      \toprule
+      \textbf{Tier} & \textbf{Program} & \textbf{Amount} & \textbf{Effort} & \textbf{Timeline} \\
+      \midrule
+      1 & ACCESS Explore   & 400K credits ($\sim$400 A100-hrs) & Abstract     & Days \\
+      1 & NAIRR Startup    & Up to 2K GPU-hrs                   & 2-page app   & 2 weeks \\
+      \midrule
+      2 & ACCESS Discover  & 1.5M credits                       & 1-page       & Rolling \\
+      2 & ACCESS Accelerate & 3M credits                        & 3-page       & Panel \\
+      2 & NAIRR Full       & 12-mo, A100/H100                   & 3-page PDF   & Periodic \\
+      \midrule
+      3 & ACCESS Maximize  & No cap                             & 10-page      & Jun--Jul 2026 \\
+      3 & DOE ALCC         & Frontier, Aurora                   & 5--10 page   & $\sim$Nov 2026 \\
+      3 & DOE INCITE       & 500K--1M+ node-hrs                 & Full proposal & $\sim$Apr 2026 \\
+      \midrule
+      4 & Google Cloud     & \$1K--\$5K                         & Online form  & Rolling \\
+      4 & AWS Research     & Up to \$5K (students)              & Online form  & Rolling \\
+      4 & Azure Students   & \$100/yr                           & No CC needed & Rolling \\
+      \bottomrule
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+% --- Slide 21: Our Plan ---
+\begin{frame}{Our Plan}
+  \textbf{Applying Now (Tier 1)}
+  \begin{itemize}
+    \item NSF ACCESS Explore --- quick access for benchmarking and initial RL experiments
+    \item NAIRR Startup --- up to 2,000 GPU-hours, decision within 2 weeks
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{Near-Term (Tier 2)}
+  \begin{itemize}
+    \item ACCESS Discover or Accelerate --- enough for meaningful RL training campaigns
+    \item NAIRR Full Allocation --- 12-month award, A100/H100 access; LLM fine-tuning fits their focus
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{Long-Term (Tier 3)}
+  \begin{itemize}
+    \item ACCESS Maximize (June 2026 window) or DOE ALCC ($\sim$Nov 2026) if scale demands it
+  \end{itemize}
+
+  \vspace{0.3em}
+  \textbf{Stacking (Tier 4):} Google/AWS/Azure credits for supplementary cloud bursting.
+\end{frame}
+
+% ============================================================
+% SECTION 7: FUTURE WORK
+% ============================================================
+\sectionsubtitle{Near-term priorities and longer-term directions}
+\section{Future Work}
+
+% --- Slide 23: Unified Coordinate System ---
+\begin{frame}{Priority: Unified Coordinate System}
+  \textbf{What:} Unified coordinate frame across multiple cameras and radar.
+
+  \vspace{0.3em}
+  \textbf{Why This Is Urgent}
+  \begin{itemize}
+    \item Required by the Florida / Jacob Minsky team
+    \item Feeds directly into cue-to-slew, radar$\rightarrow$camera projection, and camera$\rightarrow$radar verification
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Related Work}
+  \begin{itemize}
+    \item Single variable-zoom camera replacing the current dual-camera setup
+    \item Feature-point-based manual calibration replacing the existing fully-human-based tuning (Dr.\ Wang request)
+  \end{itemize}
+\end{frame}
+
+% --- Slide 24: Everything Else ---
+\begin{frame}{Other Future Work}
+  \begin{itemize}
+    \item \textbf{IMU system} --- needs hardware time sync (PTP or GPIO trigger) before horizon-based evaluation is meaningful
+    \item \textbf{VLM point placement} --- $\sim$1 month out, pending compute access for RL training
+    \item \textbf{CAD model} --- automated mechanical rig for aligned RGB/IR data collection
+    \item \textbf{Real-time projection bugfixes} --- remaining issues from 4-day sprint, handoff to Ty
+    \item \textbf{Compute applications} --- continue applying to higher tiers as proposals are prepared
+    \item \textbf{Echotrail ablation} --- side focus, ongoing
+  \end{itemize}
 \end{frame}
 
 % ------ Thank You / Q&A ------
@@ -232,7 +428,7 @@ M.S. Student}
     \centering
     {\fontsize{50}{55}\selectfont\impactfont\color{UofSCWhite} THANK YOU!}\\[1em]
     {\Large\color{UofSCWhite} Questions \& Discussion}\\[0.5em]
-    {\normalsize\color{UofSCGray30} your.email@sc.edu}
+    {\normalsize\color{UofSCGray30} jvaught@sc.edu}
     \vfill
   \end{frame}
 }
