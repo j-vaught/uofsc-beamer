@@ -106,7 +106,6 @@
 
 % Shrink frames by default so content auto-scales to fit.
 % Use \begin{frame}[noshrink]{Title} to disable on a specific slide.
-\makeatletter
 \define@key{beamerframe}{noshrink}[true]{%
   \beamer@shrinkfalse%
 }
@@ -114,7 +113,6 @@
   \beamer@shrinktrue%
   \def\beamer@shrinkpercentage{50}%
 }{}{}
-\makeatother
 
 % Enumerate: plain numbers (no square box)
 \setbeamertemplate{enumerate items}[default]
