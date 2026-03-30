@@ -35,20 +35,16 @@
   \setsansfont{Berlingske Sans}
 }{
   \setsansfont{BerlingskeSans-Md}[
-    BoldFont  = BerlingskeSans-XBd,
+    BoldFeatures = {FakeBold=1.5},
     Path      = fonts/,
     Extension = .otf
   ]
 }
 
-\IfFontExistsTF{Berlingske Sans Extra-Condensed Extra-Bold}{
-  \newfontfamily\impactfont{Berlingske Sans Extra-Condensed Extra-Bold}
-}{
-  \newfontfamily\impactfont{BerlingskeSansXCn-XBd}[
-    Path      = fonts/,
-    Extension = .otf
-  ]
-}
+\newfontfamily\impactfont{Impact}[
+  Path      = fonts/,
+  Extension = .ttf
+]
 
 \IfFontExistsTF{Berlingske Serif}{
   \newfontfamily\georgiafont{Berlingske Serif}
