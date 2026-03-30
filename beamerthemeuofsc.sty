@@ -46,14 +46,13 @@
   Extension = .ttf
 ]
 
-\IfFontExistsTF{Berlingske Serif}{
-  \newfontfamily\georgiafont{Berlingske Serif}
-}{
-  \newfontfamily\georgiafont{BerlingskeSerif-Bd}[
-    Path      = fonts/,
-    Extension = .otf
-  ]
-}
+\newfontfamily\georgiafont{Tinos-Regular}[
+  BoldFont       = Tinos-Bold,
+  ItalicFont     = Tinos-Italic,
+  BoldItalicFont = Tinos-BoldItalic,
+  Path           = fonts/,
+  Extension      = .ttf
+]
 
 % Convenience: use \formal{text} for Georgia-style text in body
 \newcommand{\formal}[1]{{\georgiafont #1}}
