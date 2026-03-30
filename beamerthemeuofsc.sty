@@ -28,38 +28,34 @@
 %   Serif   -> Tinos
 % ============================================================
 
-% Prefer the licensed UofSC fonts when they are already installed.
-% Otherwise stay on the bundled redistributable font files.
+% UofSC Berlingske fonts are bundled as woff files from sc.edu.
+% System-installed versions are preferred if available; otherwise
+% the bundled woff files are used; final fallback is the open-source set.
 \IfFontExistsTF{Berlingske Sans}{
   \setsansfont{Berlingske Sans}
 }{
-  \setsansfont{Arimo-Regular}[
-    BoldFont       = Arimo-Bold,
-    ItalicFont     = Arimo-Italic,
-    BoldItalicFont = Arimo-BoldItalic,
-    Path           = fonts/,
-    Extension      = .ttf
+  \setsansfont{BerlingskeSans-Md}[
+    BoldFont  = BerlingskeSans-XBd,
+    Path      = fonts/,
+    Extension = .otf
   ]
 }
 
 \IfFontExistsTF{Berlingske Sans Extra-Condensed Extra-Bold}{
   \newfontfamily\impactfont{Berlingske Sans Extra-Condensed Extra-Bold}
 }{
-  \newfontfamily\impactfont{Impact}[
+  \newfontfamily\impactfont{BerlingskeSansXCn-XBd}[
     Path      = fonts/,
-    Extension = .ttf
+    Extension = .otf
   ]
 }
 
 \IfFontExistsTF{Berlingske Serif}{
   \newfontfamily\georgiafont{Berlingske Serif}
 }{
-  \newfontfamily\georgiafont{Tinos-Regular}[
-    BoldFont       = Tinos-Bold,
-    ItalicFont     = Tinos-Italic,
-    BoldItalicFont = Tinos-BoldItalic,
-    Path           = fonts/,
-    Extension      = .ttf
+  \newfontfamily\georgiafont{BerlingskeSerif-Bd}[
+    Path      = fonts/,
+    Extension = .otf
   ]
 }
 
