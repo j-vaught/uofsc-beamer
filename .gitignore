@@ -28,3 +28,6 @@ dist/
 *.toc
 *.vrb
 *.xdv
+
+# Apple double files
+._*
